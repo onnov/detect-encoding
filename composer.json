@@ -1,0 +1,22 @@
+{
+  "name": "onnov/detect-encoding",
+  "description": "Cyrillic text detection encoding class",
+  "type": "library",
+  "keywords": ["encoding", "cyrillic", "mb_detect_encoding"],
+  "homepage": "https://github.com/onnov/detect-encoding",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "onnov",
+      "email": "oblnn@yandex.ru"
+    }
+  ],
+  "require": {
+    "php":">=5.6.0",
+  },
+  "autoload": {
+    "psr-4" : {
+      "Onnov\\DetectEncoding\\" : "src"
+    }
+  }
+}
