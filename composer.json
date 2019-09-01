@@ -1,8 +1,18 @@
 {
   "name": "onnov/detect-encoding",
-  "description": "Cyrillic text detection encoding class",
+  "description": "Text encoding definition class instead of mb_detect_encoding. Defines: utf-8, windows-1251, koi8-r, iso-8859-5, ibm866, .....",
   "type": "library",
-  "keywords": ["encoding", "cyrillic", "mb_detect_encoding"],
+  "keywords": [
+    'mb_detect_encoding',
+    "encoding",
+    "utf-8",
+    "windows-1251",
+    "koi8-r",
+    "iso-8859-5",
+    "ibm866",
+    "cyrillic",
+    "iconv"
+  ],
   "homepage": "https://github.com/onnov/detect-encoding",
   "license": "MIT",
   "authors": [
@@ -12,11 +22,11 @@
     }
   ],
   "require": {
-    "php":">=5.6.0"
+    "php": ">=5.6.0"
   },
   "autoload": {
-    "psr-4" : {
-      "Onnov\\DetectEncoding\\" : "src"
+    "psr-4": {
+      "Onnov\\DetectEncoding\\": "src"
     }
   }
 }

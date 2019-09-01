@@ -9,46 +9,145 @@
 
 namespace Onnov\DetectEncoding;
 
+use InvalidArgumentException;
+
 /**
  * Class EncodingDetector
  * @package Onnov\DetectEncoding
  */
 class EncodingDetector
 {
-    const UTF_8 = 'UTF-8';
-    const CP1251 = 'CP1251';
-    const WIN_1251 = 'CP1251';
-    const KOI8_R = 'KOI8-R';
-    const CP866 = 'IBM866';
-    const IBM866 = 'IBM866';
-    const ISO_8859_5 = 'ISO-8859-5';
-    const MAC = 'MAC';
+    const UTF_8 = 'utf-8';
+    const WINDOWS_1251 = 'windows-1251';
+    const KOI8_R = 'koi8-r';
+    const IBM866 = 'ibm866';
+    const ISO_8859_5 = 'iso-8859-5';
+    const MAC_CYRILLIC = 'mac-cyrillic';
 
-    private $utfLower = 7;
-    private $utfUpper = 5;
-    private $lowercase = 3;
-    private $uppercase = 1;
-    private $lastSymbol = 0;
-    private $charsets = array(
-            'UTF-8' => 0,
-            'CP1251' => 0,
-            'KOI8-R' => 0,
-            'IBM866' => 0,
-            'ISO-8859-5' => 0,
-            'MAC' => 0,
-        );
+    /** @var array */
+    protected $rangeModel = [
+        'windows-1251' => [
+            'upper' => '168,192-212,214-223',
+            'lower' => '184,224-255',
+        ],
+        'koi8-r' => [
+            'upper' => '179,224-231, 233-255',
+            'lower' => '163,192-223',
+        ],
+        'iso-8859-5' => [
+            'upper' => '161,176-196,198-207',
+            'lower' => '208-239,241',
+        ],
+        'ibm866' => [
+            'upper' => '128-148,150-159,240',
+            'lower' => '160-175,224-239,241',
+        ],
+        'mac-cyrillic' => [
+            'upper' => '128-148,150-159,221',
+            'lower' => '222-254',
+        ],
+    ];
+
+    /** @var array */
+    protected $ranges;
 
     /**
-     * @param $text
-     * @param $encoding
+     * EncodingDetector constructor.
+     */
+    public function __construct()
+    {
+        // default setting
+        $this->enableEncoding(
+            [
+                $this::WINDOWS_1251,
+                $this::KOI8_R,
+                $this::ISO_8859_5,
+            ]
+        );
+    }
+
+    /**
+     * Method to enable encoding definition
+     * Example:
+     * $detector->enableEncoding([
+     *      $detector::IBM866,
+     *      $detector::MAC_CYRILLIC,
+     * ]);
      *
+     * @param array $encodingList
+     */
+    public function enableEncoding($encodingList)
+    {
+        if (is_array($encodingList) == false) {
+            throw new InvalidArgumentException('Encoding List must be an array');
+        }
+        foreach ($encodingList as $encoding) {
+            if (isset($this->rangeModel[$encoding])) {
+                $this->ranges[$encoding] = $this->getRanges($this->rangeModel[$encoding]);
+            }
+        }
+    }
+
+    /**
+     * Method to disable encoding definition
+     * Example:
+     * $detector->disableEncoding([
+     *      $detector::ISO_8859_5,
+     * ]);
+     *
+     * @param array $encodingList
+     */
+    public function disableEncoding($encodingList)
+    {
+        if (is_array($encodingList) == false) {
+            throw new InvalidArgumentException('Encoding List must be an array');
+        }
+        foreach ($encodingList as $encoding) {
+            unset($this->ranges[$encoding]);
+        }
+    }
+
+    /**
+     * Method for adding custom encoding
+     * Example:
+     * $detector->addEncoding([
+     *      'encodingName' => [
+     *          'upper' => '1-50,200-250,253', // uppercase character number range
+     *          'lower' => '55-100,120-180,199', // lowercase character number range
+     *      ],
+     * ]);
+     *
+     * @param array $ranges
+     */
+    public function addEncoding($ranges)
+    {
+        if (is_array($ranges) == false) {
+            throw new InvalidArgumentException('range config must be an array');
+        }
+
+        foreach ($ranges as $encoding => $config) {
+            if (isset($config['upper'], $config['lower'])) {
+                $this->ranges[$encoding] = $this->getRanges($config);
+            }
+        }
+    }
+
+    /**
+     * Method for converting text of an unknown encoding into a given encoding, by default in utf-8
+     * optional parameters:
+     * $extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
+     * $encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
+     *
+     * @param string $text
+     * @param string $extra
+     * @param string $encoding
      * @return false|string
      */
-    public function iconvXtoEncoding($text, $encoding = self::UTF_8)
+    public function iconvXtoEncoding(&$text, $extra = '//TRANSLIT', $encoding = self::UTF_8)
     {
         $res = $text;
         $xec = $this->getEncoding($text);
-        if (!is_null($xec) && $xec !== $encoding) {
+        if (is_null($xec) == false && $xec !== $encoding) {
             $res = iconv($xec, $encoding, $text);
         }
 
@@ -56,169 +155,71 @@ class EncodingDetector
     }
 
     /**
-     * Определение кодировки текста
+     * Definition of text encoding
      *
      * @param string $text
-     *
-     * @return string|null
+     * @return string
      */
-    public function getEncoding($text)
+    public function getEncoding(&$text)
     {
-        $res = '';
-        if (!empty($text)) {
-            for ($a = 0; $a < strlen($text); $a++) {
-                $char = ord($text[$a]);
-
-                // non-russian characters
-                if ($char < 128 || $char > 256) {
-                    continue;
+        $res = $this::UTF_8;
+        if ($this->isUtf($text) == false) {
+            $max = 0;
+            $text = count_chars($text, 1);
+            foreach ($this->ranges as $encoding => $config) {
+                $upc = array_intersect_key($text, $config['upper']);
+                $loc = array_intersect_key($text, $config['lower']);
+                $sum = (array_sum($upc) + array_sum($loc) * 3);
+                if ($sum > $max) {
+                    $max = $sum;
+                    $res = $encoding;
                 }
-
-                // UTF-8
-                $this->checkRangeUTF8($char);
-
-                // CP1251
-                $this->checkRangeCP1251($char);
-
-                // KOI8-R
-                $this->checkRangeKOI8R($char);
-
-                // IBM866
-                $this->checkRangeIBM866($char);
-
-                // ISO-8859-5
-                $this->checkRangeISO88595($char);
-
-                // MAC
-                $this->checkRangeMAC($char);
-
-                $this->lastSymbol = $char;
             }
-
-            $res = (string)array_search(max($this->charsets), $this->charsets);
         }
 
-        return isset($this->charsets[$res]) ? $res : null;
+        return $res;
     }
 
     /**
-     * @param int $char
-     */
-    private function checkRangeUTF8($char)
-    {
-        if ($this->checkRangeUTF8fUpper($char)) {
-            $this->charsets['UTF-8'] += ($this->utfUpper * 2);
-        }
-        if ($this->checkRangeUTF8Lower($char)) {
-            $this->charsets['UTF-8'] += ($this->utfLower * 2);
-        }
-    }
-
-    /**
-     * @param int $char
+     * UTF Encoding Definition Method
      *
+     * @param string $text
      * @return bool
      */
-    private function checkRangeUTF8fUpper($char)
+    private function isUtf(&$text)
     {
-        return ($this->lastSymbol == 208)
-            && ($this->checkRange($char, 143, 176)
-                || $char == 129);
+        return (bool)preg_match('/./u', $text);
     }
 
     /**
-     * @param int $char
+     * @param array $config
+     * @return array
+     */
+    private function getRanges($config)
+    {
+        return [
+            'upper' => $this->getRange($config['upper']),
+            'lower' => $this->getRange($config['lower']),
+        ];
+    }
+
+    /**
+     * Method to convert a range from a string to an array
      *
-     * @return bool
+     * @param string $str
+     * @return array|null
      */
-    private function checkRangeUTF8Lower($char)
+    private function getRange(&$str)
     {
-        $range1 = (($this->lastSymbol == 208)
-            && ($this->checkRange($char, 175, 192)
-                || $char == 145));
-        $range2 = ($this->lastSymbol == 209
-            && $this->checkRange($char, 127, 144));
-
-        return ($range1 || $range2);
-    }
-
-    /**
-     * @param int $char
-     */
-    private function checkRangeCP1251($char)
-    {
-        if ($this->checkRange($char, 191, 224) || $char == 168) {
-            $this->charsets['CP1251'] += $this->uppercase;
+        $res = [];
+        foreach (explode(',', $str) as $item) {
+            $arr = explode('-', $item);
+            if (count($arr) > 1) {
+                $arr = range($arr[0], $arr[1]);
+            }
+            $res = array_merge($res, $arr);
         }
 
-        if ($this->checkRange($char, 223, 256) || $char == 184) {
-            $this->charsets['CP1251'] += $this->lowercase;
-        }
-    }
-
-    /**
-     * @param int $char
-     */
-    private function checkRangeKOI8R($char)
-    {
-        if ($this->checkRange($char, 191, 224) || $char == 163) {
-            $this->charsets['KOI8-R'] += $this->lowercase;
-        }
-        if ($this->checkRange($char, 222, 256) || $char == 179) {
-            $this->charsets['KOI8-R'] += $this->uppercase;
-        }
-    }
-
-    /**
-     * @param int $char
-     */
-    private function checkRangeIBM866($char)
-    {
-        if ($this->checkRange($char, 159, 176)
-            || $this->checkRange($char, 223, 241)
-        ) {
-            $this->charsets['IBM866'] += $this->lowercase;
-        }
-        if ($this->checkRange($char, 127, 160) || $char == 241) {
-            $this->charsets['IBM866'] += $this->uppercase;
-        }
-    }
-
-    /**
-     * @param int $char
-     */
-    private function checkRangeISO88595($char)
-    {
-        if ($this->checkRange($char, 207, 240) || $char == 161) {
-            $this->charsets['ISO-8859-5'] += $this->lowercase;
-        }
-        if ($this->checkRange($char, 175, 208) || $char == 241) {
-            $this->charsets['ISO-8859-5'] += $this->uppercase;
-        }
-    }
-
-    /**
-     * @param int $char
-     */
-    private function checkRangeMAC($char)
-    {
-        if ($this->checkRange($char, 221, 255)) {
-            $this->charsets['MAC'] += $this->lowercase;
-        }
-        if ($this->checkRange($char, 127, 160)) {
-            $this->charsets['MAC'] += $this->uppercase;
-        }
-    }
-
-    /**
-     * @param $num
-     * @param $min
-     * @param $max
-     *
-     * @return bool
-     */
-    private function checkRange($num, $min, $max)
-    {
-        return ($num > $min && $num < $max);
+        return array_flip($res);
     }
 }
