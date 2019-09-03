@@ -3,7 +3,7 @@
   "description": "Text encoding definition class instead of mb_detect_encoding. Defines: utf-8, windows-1251, koi8-r, iso-8859-5, ibm866, .....",
   "type": "library",
   "keywords": [
-    'mb_detect_encoding',
+    "mb_detect_encoding",
     "encoding",
     "utf-8",
     "windows-1251",
