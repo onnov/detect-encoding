@@ -1,8 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * Project: mail
- * User: sv
+ * User: onnov
  * Date: 27.08.2019
  * Time: 21:59
  */

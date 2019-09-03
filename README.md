@@ -34,7 +34,97 @@ The accuracy of the determination is high even in short sentences from 5 to 10 l
 Determining the encoding is very fast, for example, text longer than 1,300,000 Cyrillic characters is checked in 0.00096 sec. (on my computer)
 
 
-
 Link to the idea:
 
 http://patttern.blogspot.com/2012/07/php-python.html
+
+
+## Installation
+
+[Composer](https://getcomposer.org) (recommended)
+Use Composer to install this library from Packagist: onnov/captcha
+
+Run the following command from your project directory to add the dependency:
+
+    composer require onnov/detect-encoding
+
+
+Alternatively, add the dependency directly to your composer.json file:
+
+    "require": {
+        "onnov/detect-encoding": "^1.0"
+    }
+
+The classes in the project are structured according to the PSR-4 standard, so you can also use your own autoloader or require the needed files directly in your code.
+
+
+## Usage
+
+        use Onnov\DetectEncoding\EncodingDetector;
+        
+        $detector = new EncodingDetector();
+
+
+* Definition of text encoding
+
+        $text = 'Проверяемый текст';
+        $detector->getEncoding($text)
+
+
+* Method for converting text of an unknown encoding into a given encoding, by default in utf-8
+  optional parameters:
+  
+  $extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
+  
+  $encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
+
+        $detector->iconvXtoEncoding($text)
+
+* Method to enable encoding definition
+
+  Example:
+  
+        $detector->enableEncoding([
+            $detector::IBM866,
+            $detector::MAC_CYRILLIC,
+        ]);
+
+* Method to disable encoding definition
+
+  Example:
+  
+        $detector->disableEncoding([
+             $detector::ISO_8859_5,
+        ]);
+
+* Method for adding custom encoding
+
+  Example:
+  
+        $detector->addEncoding([
+             'encodingName' => [
+                 'upper' => '1-50,200-250,253', // uppercase character number range
+                 'lower' => '55-100,120-180,199', // lowercase character number range
+             ],
+        ]);
+
+#### Method to get a custom encoding range
+
+    use Onnov\DetectEncoding\CodePage;
+    
+    // utf-8 encoded alphabet
+    $cyrillicUppercase = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФЧЦЧШЩЪЫЬЭЮЯ';
+    $cyrillicLowercase = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+    
+    $codePage = new CodePage();
+    $encodingRange = $codePage->getRange($cyrillicUppercase, $cyrillicLowercase, 'koi8-u'));
+
+---
+## Symfony use
+add in services.yaml file
+
+    services:
+        Onnov\DetectEncoding\EncodingDetector:
+            autowire: true
+            
+

@@ -1,8 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * Project: mail
- * User: sv
+ * User: onnov
  * Date: 02.09.2019
  * Time: 18:25
  */
@@ -15,6 +13,14 @@ namespace Onnov\DetectEncoding;
  */
 class CodePage
 {
+    /**
+     * Method to get a custom encoding range
+     * 
+     * @param string $uppercaseLetters
+     * @param string $lowercaseLetters
+     * @param string $encoding
+     * @return array
+     */
     public function getRange($uppercaseLetters, $lowercaseLetters, $encoding)
     {
         return [
@@ -64,20 +70,9 @@ class CodePage
     protected function getLetterArr(&$strLetters, $encoding)
     {
         $str = iconv('utf-8', $encoding.'//IGNORE', $strLetters);
-//        $arr = str_split(count_chars($str, 3));
         $arr = array_keys(count_chars($str, 1));
         sort($arr);
 
         return $arr;
     }
-
-//    /**
-//     * @param string $str
-//     * @param string $encoding
-//     * @return false|string
-//     */
-//    protected function urf8ToEncoding(&$str, $encoding)
-//    {
-//        return iconv('utf-8', $encoding.'//IGNORE', $str);
-//    }
 }
