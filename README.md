@@ -2,12 +2,11 @@
 
 Text encoding definition class based on a range of code page character numbers.
 
-So far, in PHP v7. * The mb_detect_encoding function does not work well.
+So far, in PHP v7.* the `mb_detect_encoding` function does not work well.
 Therefore, you have to somehow solve this problem.
 This class is one solution.
 
-
-Built-in Encodings and accuracy:
+Built-in encodings and accuracy:
 
 letters ->   | 5     | 15    | 30    | 60    | 120   | 180   | 270
 ---          |   --- |  ---  | ---   |---    |---    |---    |---
@@ -21,7 +20,6 @@ Worst accuracy with mac-cyrillic, you need at least 60 characters to determine t
 
 Fortunately, mac-cyrillic and ibm866 encodings are not used to encode web pages. By default, they are disabled in the script, but you can enable them if necessary.
 
-
 letters ->       | 5     | 10    | 15    | 30    | 60    |
 ---              |   --- |  ---  | ---   |---    |---    |
 windows-1251     | 99.40 | 99.69 | 99.86 | 99.97 | 100.0 |
@@ -30,101 +28,92 @@ iso-8859-5       | 81.79 | 96.41 | 99.27 | 99.98 | 100.0 |
 
 The accuracy of the determination is high even in short sentences from 5 to 10 letters. And for phrases from 60 letters, the accuracy of determination reaches 100%.
 
-
 Determining the encoding is very fast, for example, text longer than 1,300,000 Cyrillic characters is checked in 0.00096 sec. (on my computer)
 
-
-Link to the idea:
-
-http://patttern.blogspot.com/2012/07/php-python.html
-
+Link to the idea: http://patttern.blogspot.com/2012/07/php-python.html
 
 ## Installation
-
 [Composer](https://getcomposer.org) (recommended)
 Use Composer to install this library from Packagist: onnov/captcha
 
 Run the following command from your project directory to add the dependency:
-
-    composer require onnov/detect-encoding
-
+```bash
+composer require onnov/detect-encoding
+```
 
 Alternatively, add the dependency directly to your composer.json file:
-
-    "require": {
-        "onnov/detect-encoding": "^1.0"
-    }
+```json
+"require": {
+    "onnov/detect-encoding": "^1.0"
+}
+```
 
 The classes in the project are structured according to the PSR-4 standard, so you can also use your own autoloader or require the needed files directly in your code.
 
-
 ## Usage
-
-        use Onnov\DetectEncoding\EncodingDetector;
+```php
+use Onnov\DetectEncoding\EncodingDetector;
         
-        $detector = new EncodingDetector();
+$detector = new EncodingDetector();
+```
 
-
-* Definition of text encoding
-
-        $text = 'Проверяемый текст';
-        $detector->getEncoding($text)
-
+* Definition of text encoding:
+```php
+$text = 'Проверяемый текст';
+$detector->getEncoding($text)
+```
 
 * Method for converting text of an unknown encoding into a given encoding, by default in utf-8
   optional parameters:
+```php
+$extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
   
-  $extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
-  
-  $encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
+$encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
 
-        $detector->iconvXtoEncoding($text)
+$detector->iconvXtoEncoding($text)
+```
 
-* Method to enable encoding definition
+* Method to enable encoding definition:
+```php
+$detector->enableEncoding([
+    $detector::IBM866,
+    $detector::MAC_CYRILLIC,
+]);
+```
 
-  Example:
-  
-        $detector->enableEncoding([
-            $detector::IBM866,
-            $detector::MAC_CYRILLIC,
-        ]);
+* Method to disable encoding definition:
+```php
+$detector->disableEncoding([
+    $detector::ISO_8859_5,
+]);
+```
 
-* Method to disable encoding definition
+* Method for adding custom encoding:
+```php
+$detector->addEncoding([
+    'encodingName' => [
+        'upper' => '1-50,200-250,253', // uppercase character number range
+        'lower' => '55-100,120-180,199', // lowercase character number range
+    ],
+]);
+```
 
-  Example:
-  
-        $detector->disableEncoding([
-             $detector::ISO_8859_5,
-        ]);
-
-* Method for adding custom encoding
-
-  Example:
-  
-        $detector->addEncoding([
-             'encodingName' => [
-                 'upper' => '1-50,200-250,253', // uppercase character number range
-                 'lower' => '55-100,120-180,199', // lowercase character number range
-             ],
-        ]);
-
-#### Method to get a custom encoding range
-
-    use Onnov\DetectEncoding\CodePage;
+* Method to get a custom encoding range:
+```php
+use Onnov\DetectEncoding\CodePage;
     
-    // utf-8 encoded alphabet
-    $cyrillicUppercase = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФЧЦЧШЩЪЫЬЭЮЯ';
-    $cyrillicLowercase = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+// utf-8 encoded alphabet
+$cyrillicUppercase = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФЧЦЧШЩЪЫЬЭЮЯ';
+$cyrillicLowercase = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
     
-    $codePage = new CodePage();
-    $encodingRange = $codePage->getRange($cyrillicUppercase, $cyrillicLowercase, 'koi8-u'));
+$codePage = new CodePage();
+$encodingRange = $codePage->getRange($cyrillicUppercase, $cyrillicLowercase, 'koi8-u'));
+```
 
----
 ## Symfony use
-add in services.yaml file
-
-    services:
-        Onnov\DetectEncoding\EncodingDetector:
-            autowire: true
-            
-
+Add in services.yaml file:
+```yaml
+services:
+    Onnov\DetectEncoding\EncodingDetector:
+        autowire: true
+```
