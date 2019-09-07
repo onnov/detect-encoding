@@ -22,19 +22,23 @@ class EncodingDetectorTest extends TestCase
     {
         /** correct detecting */
         $encodingDetector = new EncodingDetector();
+        $encodingDetector->enableEncoding(
+            [
+                EncodingDetector::IBM866,
+                EncodingDetector::MAC_CYRILLIC,
+            ]
+        );
         $this->assertEquals(EncodingDetector::UTF_8, $encodingDetector->getEncoding($text));
         $textWindows1251 = iconv(EncodingDetector::UTF_8, EncodingDetector::WINDOWS_1251, $text);
         $this->assertEquals(EncodingDetector::WINDOWS_1251, $encodingDetector->getEncoding($textWindows1251));
         $textISO88595 = iconv(EncodingDetector::UTF_8, EncodingDetector::ISO_8859_5, $text);
         $this->assertEquals(EncodingDetector::ISO_8859_5, $encodingDetector->getEncoding($textISO88595));
         $textKOI8R = iconv(EncodingDetector::UTF_8, EncodingDetector::KOI8_R, $text);
-
-        /** detects as windows-1251 */
         $textIBM866 = iconv(EncodingDetector::UTF_8, EncodingDetector::IBM866, $text);
-        // $this->assertEquals(EncodingDetector::IBM866, $encodingDetector->getEncoding($textIBM866));
+        $this->assertEquals(EncodingDetector::IBM866, $encodingDetector->getEncoding($textIBM866));
         $this->assertEquals(EncodingDetector::KOI8_R, $encodingDetector->getEncoding($textKOI8R));
         $textMACCYRILLIC = iconv(EncodingDetector::UTF_8, EncodingDetector::MAC_CYRILLIC, $text);
-        // $this->assertEquals(EncodingDetector::MAC_CYRILLIC, $encodingDetector->getEncoding($textMACCYRILLIC));
+        $this->assertEquals(EncodingDetector::MAC_CYRILLIC, $encodingDetector->getEncoding($textMACCYRILLIC));
     }
 
     public function testAddEncoding()
