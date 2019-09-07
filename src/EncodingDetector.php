@@ -72,7 +72,7 @@ class EncodingDetector
      *
      * @param array $encodingList
      */
-    public function enableEncoding(array $encodingList): void
+    public function enableEncoding(array $encodingList)
     {
         foreach ($encodingList as $encoding) {
             if (isset($this->rangeModel[$encoding])) {
@@ -90,7 +90,7 @@ class EncodingDetector
      *
      * @param array $encodingList
      */
-    public function disableEncoding(array $encodingList): void
+    public function disableEncoding(array $encodingList)
     {
         foreach ($encodingList as $encoding) {
             unset($this->ranges[$encoding]);
@@ -109,7 +109,7 @@ class EncodingDetector
      *
      * @param array $ranges
      */
-    public function addEncoding(array $ranges): void
+    public function addEncoding(array $ranges)
     {
         foreach ($ranges as $encoding => $config) {
             if (isset($config['upper'], $config['lower'])) {
@@ -129,10 +129,11 @@ class EncodingDetector
      * @param string $encoding
      * @return false|string
      */
-    public function iconvXtoEncoding(string &$text, ?string $extra = null, ?string $encoding = null)
+    public function iconvXtoEncoding(&$text, $extra = '//TRANSLIT', $encoding = EncodingDetector::UTF_8)
     {
-        $extra = $extra ?? '//TRANSLIT';
-        $encoding = $encoding ?? EncodingDetector::UTF_8;
+        if(!in_array($extra, ['//TRANSLIT', '//IGNORE'])) {
+            $extra = '//TRANSLIT';
+        }
         $res = $text;
         $xec = $this->getEncoding($text);
         if ($xec !== $encoding) {
@@ -214,7 +215,7 @@ class EncodingDetector
     /**
      * @return array<string, array<string, string>>
      */
-    public function getEncodingList(): array
+    public function getEncodingList()
     {
         return $this->ranges;
     }

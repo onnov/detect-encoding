@@ -62,7 +62,7 @@ class EncodingDetectorTest extends TestCase
         $encodingDetector = new EncodingDetector();
         $encodingDetector->disableEncoding([$encoding]);
         $this->assertArrayNotHasKey(
-            $encoding ?? '',
+            $encoding === null ? '' : $encoding,
             $encodingDetector->getEncodingList()
         );
 

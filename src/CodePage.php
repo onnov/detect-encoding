@@ -21,7 +21,7 @@ class CodePage
      * @param string $encoding
      * @return array<string, array<string, string>>
      */
-    public function getRange(string $uppercaseLetters, string $lowercaseLetters, string $encoding): array
+    public function getRange($uppercaseLetters, $lowercaseLetters, $encoding)
     {
         return [
             $encoding => [
@@ -35,7 +35,7 @@ class CodePage
      * @param array $array
      * @return string
      */
-    private function getRangeStr(array $array): string
+    private function getRangeStr(array $array)
     {
         $ranges = [];
         $last = null;
@@ -65,7 +65,7 @@ class CodePage
      * @param string $encoding
      * @return array<int, int|string>
      */
-    private function getLetterArr(string &$strLetters, string $encoding): array
+    private function getLetterArr(&$strLetters, $encoding)
     {
         $str = iconv('utf-8', $encoding . '//IGNORE', $strLetters);
         if (!is_string($str)) {
