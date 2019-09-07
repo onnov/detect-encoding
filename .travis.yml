@@ -39,7 +39,7 @@ script:
   - if [[ $NO_CHECK == 1 ]]; then return 0; fi
   - composer validate --no-check-all
   - composer phpunit || exit 1
-  - if [[ $NO_DEV != 1 ]]; then return 0; fi
+  - if [[ $NO_DEV == 1 ]]; then return 0; fi
   - composer phpcs
   - composer phpmd
   - composer phpstan
