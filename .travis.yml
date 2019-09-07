@@ -9,19 +9,14 @@ cache:
 php:
   - '7.2'
   - '7.3'
+  - 7.4snapshot
+  - nightly
 
 matrix:
   fast_finish: true
-  include:
-    - php: 7.4snapshot
-      env: NO_DEV=1
-    - php: nightly
-      env: NO_DEV=1
   allow_failures:
     - php: 7.4snapshot
-      env: NO_DEV=1
     - php: nightly
-      env: NO_DEV=1
 
 before_install:
   - |
@@ -36,10 +31,8 @@ before_script:
   - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source $COMPOSER_FLAGS
 
 script:
-  - if [[ $NO_CHECK == 1 ]]; then return 0; fi
   - composer validate --no-check-all
   - composer phpunit || exit 1
-  - if [[ $NO_DEV == 1 ]]; then return 0; fi
   - composer phpcs
   - composer phpmd
   - composer phpstan
