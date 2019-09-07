@@ -104,7 +104,7 @@ class EncodingDetectorTest extends TestCase
     public function textDataProvider()
     {
         yield ['Проверяемый текст'];
-        yield ['Длинный проверяемый текст. Длинный проверяемый текст. Длинный проверяемый текст.'];
+        yield ['Длинный проверяемый текст. Чушь: гид вёз кэб цапф, юный жмот съел хрящ.'];
     }
 
     public function encodingDataProvider()
