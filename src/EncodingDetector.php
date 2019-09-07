@@ -131,7 +131,7 @@ class EncodingDetector
      */
     public function iconvXtoEncoding(&$text, $extra = '//TRANSLIT', $encoding = EncodingDetector::UTF_8)
     {
-        if(!in_array($extra, ['//TRANSLIT', '//IGNORE'])) {
+        if (!in_array($extra, ['//TRANSLIT', '//IGNORE'])) {
             $extra = '//TRANSLIT';
         }
         $res = $text;

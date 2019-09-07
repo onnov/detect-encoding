@@ -41,7 +41,7 @@ class CodePage
         $last = null;
         foreach ($array as $current) {
             if ($current > $last + 1) {
-                $lastKey = array_key_last($ranges);
+                $lastKey = key(array_slice($ranges, -1, 1, true));
                 if (null !== $lastKey) {
                     $ranges[$lastKey][1] = $last;
                 }
@@ -49,7 +49,8 @@ class CodePage
             }
             $last = $current;
         }
-        $ranges[array_key_last($ranges)][1] = $last;
+        $lastKey = key(array_slice($ranges, -1, 1, true));
+        $ranges[$lastKey][1] = $last;
 
         $stringIntervals = [];
         foreach ($ranges as $interval) {
