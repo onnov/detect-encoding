@@ -7,6 +7,9 @@ cache:
     - $HOME/.cache/composer/files
 
 php:
+  - '5.6'
+  - '7.0'
+  - '7.1'
   - '7.2'
   - '7.3'
   - 7.4snapshot
@@ -19,11 +22,6 @@ matrix:
     - php: nightly
 
 before_install:
-  - |
-    if [[ $NO_CHECK == 1 || $NO_DEV == 1 ]];
-      then phpenv config-rm xdebug.ini || echo 'No xdebug config.'
-      export COMPOSER_FLAGS="$COMPOSER_FLAGS --no-dev"
-    fi
   - test "$TRAVIS_PHP_VERSION" != "nightly" || export COMPOSER_FLAGS="$COMPOSER_FLAGS --ignore-platform-reqs"
 
 before_script:
@@ -32,11 +30,9 @@ before_script:
 
 script:
   - composer validate --no-check-all
-  - composer phpunit || exit 1
   - composer phpcs
   - composer phpmd
-  - composer phpstan
-  - composer infection
+  - composer phpunit
   - composer coverage
 
 
