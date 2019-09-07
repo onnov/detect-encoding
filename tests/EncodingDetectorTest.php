@@ -34,9 +34,9 @@ class EncodingDetectorTest extends TestCase
         $textISO88595 = iconv(EncodingDetector::UTF_8, EncodingDetector::ISO_8859_5, $text);
         $this->assertEquals(EncodingDetector::ISO_8859_5, $encodingDetector->getEncoding($textISO88595));
         $textKOI8R = iconv(EncodingDetector::UTF_8, EncodingDetector::KOI8_R, $text);
+        $this->assertEquals(EncodingDetector::KOI8_R, $encodingDetector->getEncoding($textKOI8R));
         $textIBM866 = iconv(EncodingDetector::UTF_8, EncodingDetector::IBM866, $text);
         $this->assertEquals(EncodingDetector::IBM866, $encodingDetector->getEncoding($textIBM866));
-        $this->assertEquals(EncodingDetector::KOI8_R, $encodingDetector->getEncoding($textKOI8R));
         $textMACCYRILLIC = iconv(EncodingDetector::UTF_8, EncodingDetector::MAC_CYRILLIC, $text);
         $this->assertEquals(EncodingDetector::MAC_CYRILLIC, $encodingDetector->getEncoding($textMACCYRILLIC));
     }
@@ -98,7 +98,6 @@ class EncodingDetectorTest extends TestCase
         $this->assertSame($text, $encodingDetector->iconvXtoEncoding($text));
         $textKOI8R = iconv(EncodingDetector::UTF_8, EncodingDetector::KOI8_R, $text);
         $this->assertSame($textKOI8R, $encodingDetector->iconvXtoEncoding($text, '//IGNORE', EncodingDetector::KOI8_R));
-        // need to write test correctly and with other arguments combinations
     }
 
     public function textDataProvider()
