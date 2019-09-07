@@ -15,7 +15,7 @@ class CodePage
 {
     /**
      * Method to get a custom encoding range
-     * 
+     *
      * @param string $uppercaseLetters
      * @param string $lowercaseLetters
      * @param string $encoding
