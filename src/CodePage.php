@@ -53,7 +53,7 @@ class CodePage
 
         $stringIntervals = [];
         foreach ($ranges as $interval) {
-            $stringIntervals[] = $interval[0] < $interval[1] ? implode('-', $interval) : $interval[0];
+            $stringIntervals[] = $interval[0] < $interval[1] ? implode('-', $interval) : array_pop($interval);
         }
         $string = implode(', ', $stringIntervals);
 
