@@ -218,6 +218,4 @@ class EncodingDetector
     {
         return $this->ranges;
     }
-
-
 }

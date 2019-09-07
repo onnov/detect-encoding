@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/onnov/detect-encoding.svg?branch=master)](https://travis-ci.org/onnov/detect-encoding)
+
 # Detect encoding
 
 Text encoding definition class based on a range of code page character numbers.
