@@ -19,9 +19,9 @@ class CodePage
      * @param string $uppercaseLetters
      * @param string $lowercaseLetters
      * @param string $encoding
-     * @return array
+     * @return array<string, array<string, string>>
      */
-    public function getRange($uppercaseLetters, $lowercaseLetters, $encoding)
+    public function getRange(string $uppercaseLetters, string $lowercaseLetters, string $encoding): array
     {
         return [
             $encoding => [
@@ -35,10 +35,10 @@ class CodePage
      * @param array $array
      * @return string
      */
-    protected function getRangeStr($array)
+    protected function getRangeStr(array $array): string
     {
         $string = '';
-        if (is_array($array) && count($array) > 0) {
+        if (count($array) > 0) {
             $fl = 0;
             $string = $array[0];
             for ($i = 1; $i < count($array); $i++) {
@@ -47,15 +47,15 @@ class CodePage
                     continue;
                 } else {
                     if ($fl == 1) {
-                        $string .= "-".$array[$i - 1].", ".$array[$i];
+                        $string .= "-" . $array[$i - 1] . ", " . $array[$i];
                     } else {
-                        $string .= ", ".$array[$i];
+                        $string .= ", " . $array[$i];
                     }
                     $fl = 0;
                 }
             }
             if ($fl == 1) {
-                $string .= "-".$array[$i - 1];
+                $string .= "-" . $array[0];
             }
         }
 
@@ -65,11 +65,13 @@ class CodePage
     /**
      * @param string $strLetters
      * @param string $encoding
-     * @return array
+     * @return array<int, int|string>
      */
-    protected function getLetterArr(&$strLetters, $encoding)
+    protected function getLetterArr(string &$strLetters, string $encoding): array
     {
-        $str = iconv('utf-8', $encoding.'//IGNORE', $strLetters);
+        $str = iconv('utf-8', $encoding . '//IGNORE', $strLetters);
+        if (false === $str) return [];
+
         $arr = array_keys(count_chars($str, 1));
         sort($arr);
 
