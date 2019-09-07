@@ -35,7 +35,7 @@ class CodePage
      * @param array $array
      * @return string
      */
-    protected function getRangeStr(array $array): string
+    private function getRangeStr(array $array): string
     {
         $ranges = [];
         $last = null;
@@ -53,7 +53,7 @@ class CodePage
 
         $stringIntervals = [];
         foreach ($ranges as $interval) {
-            $stringIntervals[] = $interval[0] === $interval[1] ? $interval[0] : implode('-', $interval);
+            $stringIntervals[] = $interval[0] < $interval[1] ? implode('-', $interval) : $interval[0];
         }
         $string = implode(', ', $stringIntervals);
 
@@ -65,10 +65,10 @@ class CodePage
      * @param string $encoding
      * @return array<int, int|string>
      */
-    protected function getLetterArr(string &$strLetters, string $encoding): array
+    private function getLetterArr(string &$strLetters, string $encoding): array
     {
         $str = iconv('utf-8', $encoding . '//IGNORE', $strLetters);
-        if (false === $str) {
+        if (!is_string($str)) {
             return [];
         }
 

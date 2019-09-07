@@ -44,9 +44,8 @@ class EncodingDetectorTest extends TestCase
     public function testAddEncoding()
     {
         $encodingDetector = new EncodingDetector();
-        $encodingDetector->addEncoding(['upper' => '1-50,200-250,253', 'lower' => '55-100,120-180,199']);
-        // how to check if that was successful?
-        $this->assertTrue(true);
+        $encodingDetector->addEncoding(['custom' => ['upper' => '1-50,200-250,253', 'lower' => '55-100,120-180,199']]);
+        $this->assertArrayHasKey('custom', $encodingDetector->getEncodingList());
 
         $this->expectException(TypeError::class);
         $this->expectExceptionMessageRegExp('/must be of the type array/');
@@ -62,8 +61,10 @@ class EncodingDetectorTest extends TestCase
     {
         $encodingDetector = new EncodingDetector();
         $encodingDetector->disableEncoding([$encoding]);
-        // how to check if that was successful?
-        $this->assertTrue(true);
+        $this->assertArrayNotHasKey(
+            $encoding ?? '',
+            $encodingDetector->getEncodingList()
+        );
 
         $this->expectException(TypeError::class);
         $this->expectExceptionMessageRegExp('/must be of the type array/');
@@ -79,8 +80,14 @@ class EncodingDetectorTest extends TestCase
     {
         $encodingDetector = new EncodingDetector();
         $encodingDetector->enableEncoding([$encoding]);
-        // how to check if that was successful?
-        $this->assertTrue(true);
+        $expectedEncodings = [EncodingDetector::WINDOWS_1251, EncodingDetector::KOI8_R, EncodingDetector::ISO_8859_5];
+        if (!in_array($encoding, array_merge($expectedEncodings, [EncodingDetector::UTF_8, 'unknown', null]))) {
+            $expectedEncodings[] = $encoding;
+        }
+        $this->assertSame(
+            $expectedEncodings,
+            array_keys($encodingDetector->getEncodingList())
+        );
 
         $this->expectException(TypeError::class);
         $this->expectExceptionMessageRegExp('/must be of the type array/');
@@ -98,6 +105,15 @@ class EncodingDetectorTest extends TestCase
         $this->assertSame($text, $encodingDetector->iconvXtoEncoding($text));
         $textKOI8R = iconv(EncodingDetector::UTF_8, EncodingDetector::KOI8_R, $text);
         $this->assertSame($textKOI8R, $encodingDetector->iconvXtoEncoding($text, '//IGNORE', EncodingDetector::KOI8_R));
+    }
+
+    public function testGetEncodingList()
+    {
+        $encodingDetector = new EncodingDetector();
+        $this->assertSame(
+            [EncodingDetector::WINDOWS_1251, EncodingDetector::KOI8_R, EncodingDetector::ISO_8859_5],
+            array_keys($encodingDetector->getEncodingList())
+        );
     }
 
     public function textDataProvider()

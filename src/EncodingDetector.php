@@ -210,4 +210,14 @@ class EncodingDetector
 
         return array_flip($res);
     }
+
+    /**
+     * @return array<string, array<string, string>>
+     */
+    public function getEncodingList(): array
+    {
+        return $this->ranges;
+    }
+
+
 }
