@@ -4,7 +4,6 @@ namespace Onnov\DetectEncoding\Tests;
 
 use Onnov\DetectEncoding\EncodingDetector;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 
 class EncodingDetectorTest extends TestCase
 {
@@ -46,11 +45,6 @@ class EncodingDetectorTest extends TestCase
         $encodingDetector = new EncodingDetector();
         $encodingDetector->addEncoding(['custom' => ['upper' => '1-50,200-250,253', 'lower' => '55-100,120-180,199']]);
         $this->assertArrayHasKey('custom', $encodingDetector->getEncodingList());
-
-        $this->expectException(TypeError::class);
-        $this->expectExceptionMessageRegExp('/must be of the type array/');
-        $this->expectExceptionCode(0);
-        $encodingDetector->addEncoding(null);
     }
 
     /**
@@ -65,11 +59,6 @@ class EncodingDetectorTest extends TestCase
             $encoding === null ? '' : $encoding,
             $encodingDetector->getEncodingList()
         );
-
-        $this->expectException(TypeError::class);
-        $this->expectExceptionMessageRegExp('/must be of the type array/');
-        $this->expectExceptionCode(0);
-        $encodingDetector->disableEncoding(1);
     }
 
     /**
@@ -88,11 +77,6 @@ class EncodingDetectorTest extends TestCase
             $expectedEncodings,
             array_keys($encodingDetector->getEncodingList())
         );
-
-        $this->expectException(TypeError::class);
-        $this->expectExceptionMessageRegExp('/must be of the type array/');
-        $this->expectExceptionCode(0);
-        $encodingDetector->enableEncoding(1);
     }
 
     /**
