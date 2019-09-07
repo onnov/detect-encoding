@@ -129,8 +129,9 @@ class EncodingDetector
      * @param string $encoding
      * @return false|string
      */
-    public function iconvXtoEncoding(string &$text, string $extra = '//TRANSLIT', ?string $encoding = null)
+    public function iconvXtoEncoding(string &$text, ?string $extra = null, ?string $encoding = null)
     {
+        $extra = $extra ?? '//TRANSLIT';
         $encoding = $encoding ?? EncodingDetector::UTF_8;
         $res = $text;
         $xec = $this->getEncoding($text);

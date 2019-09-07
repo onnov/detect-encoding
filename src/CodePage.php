@@ -37,27 +37,25 @@ class CodePage
      */
     protected function getRangeStr(array $array): string
     {
-        $string = '';
-        if (count($array) > 0) {
-            $fl = 0;
-            $string = $array[0];
-            for ($i = 1; $i < count($array); $i++) {
-                if ($array[$i] - $array[$i - 1] == 1) {
-                    $fl = 1;
-                    continue;
-                } else {
-                    if ($fl == 1) {
-                        $string .= "-" . $array[$i - 1] . ", " . $array[$i];
-                    } else {
-                        $string .= ", " . $array[$i];
-                    }
-                    $fl = 0;
+        $ranges = [];
+        $last = null;
+        foreach ($array as $current) {
+            if ($current > $last + 1) {
+                $lastKey = array_key_last($ranges);
+                if (null !== $lastKey) {
+                    $ranges[$lastKey][1] = $last;
                 }
+                $ranges[] = [$current, null];
             }
-            if ($fl == 1) {
-                $string .= "-" . $array[$i - 1];
-            }
+            $last = $current;
         }
+        $ranges[array_key_last($ranges)][1] = $last;
+
+        $stringIntervals = [];
+        foreach ($ranges as $interval) {
+            $stringIntervals[] = $interval[0] === $interval[1] ? $interval[0] : implode('-', $interval);
+        }
+        $string = implode(', ', $stringIntervals);
 
         return $string;
     }
