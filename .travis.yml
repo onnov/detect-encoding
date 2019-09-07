@@ -20,19 +20,22 @@ matrix:
     - php: 7.1
       env: NO_CHECK=1
     - php: 7.4snapshot
-      env: XDEBUG=0
+      env: NO_DEV=1
     - php: nightly
-      env: XDEBUG=0
+      env: NO_DEV=1
   allow_failures:
     - php: 7.4snapshot
-      env: XDEBUG=0
+      env: NO_DEV=1
     - php: nightly
-      env: XDEBUG=0
+      env: NO_DEV=1
 
 before_install:
-  - if [[ $NO_CHECK == 1 || $XDEBUG == 0 ]]; then phpenv config-rm xdebug.ini || echo 'No xdebug config.'; fi
+  - |
+    if [[ $NO_CHECK == 1 || $NO_DEV == 1 ]];
+      then phpenv config-rm xdebug.ini || echo 'No xdebug config.'
+      export COMPOSER_FLAGS="$COMPOSER_FLAGS --no-dev"
+    fi
   - test "$TRAVIS_PHP_VERSION" != "nightly" || export COMPOSER_FLAGS="$COMPOSER_FLAGS --ignore-platform-reqs"
-  - if [[ $NO_CHECK == 1 || $XDEBUG == 0 ]]; then export COMPOSER_FLAGS="$COMPOSER_FLAGS --no-dev"; fi
 
 before_script:
   - composer self-update
@@ -41,12 +44,15 @@ before_script:
 script:
   - if [[ $NO_CHECK == 1 ]]; then return 0; fi
   - composer validate --no-check-all
-  - composer phpcs
-#  - composer phpmd
-#  - composer phpstan
   - composer phpunit || exit 1
-  - if [[ $XDEBUG != 0 ]]; then composer infection || exit 1; fi
-  - if [[ $XDEBUG != 0 ]]; then composer coverage || exit 1; fi
+  - |
+    if [[ $NO_DEV != 1 ]]; then
+      composer phpcs
+      # composer phpmd
+      # composer phpstan
+      composer infection
+      composer coverage
+    fi
 
 
 notifications:
