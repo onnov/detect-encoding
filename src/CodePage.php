@@ -55,7 +55,7 @@ class CodePage
                 }
             }
             if ($fl == 1) {
-                $string .= "-" . $array[0];
+                $string .= "-" . $array[$i - 1];
             }
         }
 
@@ -70,7 +70,9 @@ class CodePage
     protected function getLetterArr(string &$strLetters, string $encoding): array
     {
         $str = iconv('utf-8', $encoding . '//IGNORE', $strLetters);
-        if (false === $str) return [];
+        if (false === $str) {
+            return [];
+        }
 
         $arr = array_keys(count_chars($str, 1));
         sort($arr);

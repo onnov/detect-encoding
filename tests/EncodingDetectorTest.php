@@ -2,9 +2,9 @@
 
 namespace Onnov\DetectEncoding\Tests;
 
-use InvalidArgumentException;
 use Onnov\DetectEncoding\EncodingDetector;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 class EncodingDetectorTest extends TestCase
 {
@@ -48,8 +48,8 @@ class EncodingDetectorTest extends TestCase
         // how to check if that was successful?
         $this->assertTrue(true);
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('range config must be an array');
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessageRegExp('/must be of the type array/');
         $this->expectExceptionCode(0);
         $encodingDetector->addEncoding(null);
     }
@@ -65,8 +65,8 @@ class EncodingDetectorTest extends TestCase
         // how to check if that was successful?
         $this->assertTrue(true);
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Encoding List must be an array');
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessageRegExp('/must be of the type array/');
         $this->expectExceptionCode(0);
         $encodingDetector->disableEncoding(1);
     }
@@ -82,8 +82,8 @@ class EncodingDetectorTest extends TestCase
         // how to check if that was successful?
         $this->assertTrue(true);
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Encoding List must be an array');
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessageRegExp('/must be of the type array/');
         $this->expectExceptionCode(0);
         $encodingDetector->enableEncoding(1);
     }

@@ -7,8 +7,6 @@
 
 namespace Onnov\DetectEncoding;
 
-use InvalidArgumentException;
-
 /**
  * Class EncodingDetector
  * @package Onnov\DetectEncoding
@@ -22,7 +20,7 @@ class EncodingDetector
     const ISO_8859_5 = 'iso-8859-5';
     const MAC_CYRILLIC = 'mac-cyrillic';
 
-    /** @var array */
+    /** @var array<string, array<string, string>> */
     protected $rangeModel = [
         'windows-1251' => [
             'upper' => '168,192-212,214-223',
@@ -74,11 +72,8 @@ class EncodingDetector
      *
      * @param array $encodingList
      */
-    public function enableEncoding($encodingList)
+    public function enableEncoding(array $encodingList): void
     {
-        if (is_array($encodingList) == false) {
-            throw new InvalidArgumentException('Encoding List must be an array');
-        }
         foreach ($encodingList as $encoding) {
             if (isset($this->rangeModel[$encoding])) {
                 $this->ranges[$encoding] = $this->getRanges($this->rangeModel[$encoding]);
@@ -95,11 +90,8 @@ class EncodingDetector
      *
      * @param array $encodingList
      */
-    public function disableEncoding($encodingList)
+    public function disableEncoding(array $encodingList): void
     {
-        if (is_array($encodingList) == false) {
-            throw new InvalidArgumentException('Encoding List must be an array');
-        }
         foreach ($encodingList as $encoding) {
             unset($this->ranges[$encoding]);
         }
@@ -117,12 +109,8 @@ class EncodingDetector
      *
      * @param array $ranges
      */
-    public function addEncoding($ranges)
+    public function addEncoding(array $ranges): void
     {
-        if (is_array($ranges) == false) {
-            throw new InvalidArgumentException('range config must be an array');
-        }
-
         foreach ($ranges as $encoding => $config) {
             if (isset($config['upper'], $config['lower'])) {
                 $this->ranges[$encoding] = $this->getRanges($config);
@@ -141,11 +129,12 @@ class EncodingDetector
      * @param string $encoding
      * @return false|string
      */
-    public function iconvXtoEncoding(&$text, $extra = '//TRANSLIT', $encoding = self::UTF_8)
+    public function iconvXtoEncoding(string &$text, string $extra = '//TRANSLIT', ?string $encoding = null)
     {
+        $encoding = $encoding ?? EncodingDetector::UTF_8;
         $res = $text;
         $xec = $this->getEncoding($text);
-        if (is_null($xec) == false && $xec !== $encoding) {
+        if ($xec !== $encoding) {
             $res = iconv($xec, $encoding, $text);
         }
 
