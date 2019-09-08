@@ -15,11 +15,11 @@ class CodePage
 {
     /**
      * Method to get a custom encoding range
-     * 
+     *
      * @param string $uppercaseLetters
      * @param string $lowercaseLetters
      * @param string $encoding
-     * @return array
+     * @return array<string, array<string, string>>
      */
     public function getRange($uppercaseLetters, $lowercaseLetters, $encoding)
     {
@@ -35,29 +35,28 @@ class CodePage
      * @param array $array
      * @return string
      */
-    protected function getRangeStr($array)
+    private function getRangeStr(array $array)
     {
-        $string = '';
-        if (is_array($array) && count($array) > 0) {
-            $fl = 0;
-            $string = $array[0];
-            for ($i = 1; $i < count($array); $i++) {
-                if ($array[$i] - $array[$i - 1] == 1) {
-                    $fl = 1;
-                    continue;
-                } else {
-                    if ($fl == 1) {
-                        $string .= "-".$array[$i - 1].", ".$array[$i];
-                    } else {
-                        $string .= ", ".$array[$i];
-                    }
-                    $fl = 0;
+        $ranges = [];
+        $last = null;
+        foreach ($array as $current) {
+            if ($current > $last + 1) {
+                $lastKey = key(array_slice($ranges, -1, 1, true));
+                if (null !== $lastKey) {
+                    $ranges[$lastKey][1] = $last;
                 }
+                $ranges[] = [$current, null];
             }
-            if ($fl == 1) {
-                $string .= "-".$array[$i - 1];
-            }
+            $last = $current;
         }
+        $lastKey = key(array_slice($ranges, -1, 1, true));
+        $ranges[$lastKey][1] = $last;
+
+        $stringIntervals = [];
+        foreach ($ranges as $interval) {
+            $stringIntervals[] = $interval[0] < $interval[1] ? implode('-', $interval) : array_pop($interval);
+        }
+        $string = implode(', ', $stringIntervals);
 
         return $string;
     }
@@ -65,11 +64,15 @@ class CodePage
     /**
      * @param string $strLetters
      * @param string $encoding
-     * @return array
+     * @return array<int, int|string>
      */
-    protected function getLetterArr(&$strLetters, $encoding)
+    private function getLetterArr(&$strLetters, $encoding)
     {
-        $str = iconv('utf-8', $encoding.'//IGNORE', $strLetters);
+        $str = iconv('utf-8', $encoding . '//IGNORE', $strLetters);
+        if (!is_string($str)) {
+            return [];
+        }
+
         $arr = array_keys(count_chars($str, 1));
         sort($arr);
 

@@ -22,11 +22,32 @@
     }
   ],
   "require": {
-    "php": ">=5.6.0"
+    "php": ">=5.6",
+    "ext-iconv": "*"
   },
   "autoload": {
     "psr-4": {
-      "Onnov\\DetectEncoding\\": "src"
+      "Onnov\\DetectEncoding\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Onnov\\DetectEncoding\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*",
+    "phpbench/phpbench": "*",
+    "phpmd/phpmd": "*",
+    "squizlabs/php_codesniffer": "*",
+    "phpcompatibility/php-compatibility": "*"
+  },
+  "scripts": {
+    "phpcs": "phpcs",
+    "phpcbf": "phpcbf",
+    "phpmd": "phpmd src text cleancode,codesize,controversial,design,naming,unusedcode",
+    "phpunit": "phpunit",
+    "coverage": "phpunit --coverage-text --coverage-html ./build/coverage/html --coverage-clover ./build/coverage/clover.xml",
+    "phpbench": "phpbench run benchmarks --report=default"
   }
 }
