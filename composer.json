@@ -42,6 +42,7 @@
     "phpstan/phpstan": "*",
     "phpstan/phpstan-strict-rules": "*",
     "squizlabs/php_codesniffer": "*",
+    "infection/infection": "*",
     "phpcompatibility/php-compatibility": "*",
     "roave/backward-compatibility-check": "*"
   },
