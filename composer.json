@@ -22,7 +22,7 @@
     }
   ],
   "require": {
-    "php": ">=5.6",
+    "php": ">=7.2",
     "ext-iconv": "*"
   },
   "autoload": {
@@ -39,15 +39,22 @@
     "phpunit/phpunit": "*",
     "phpbench/phpbench": "*",
     "phpmd/phpmd": "*",
+    "phpstan/phpstan": "*",
+    "phpstan/phpstan-strict-rules": "*",
     "squizlabs/php_codesniffer": "*",
-    "phpcompatibility/php-compatibility": "*"
+    "infection/infection": "*",
+    "phpcompatibility/php-compatibility": "*",
+    "roave/backward-compatibility-check": "*"
   },
   "scripts": {
     "phpcs": "phpcs",
     "phpcbf": "phpcbf",
     "phpmd": "phpmd src text cleancode,codesize,controversial,design,naming,unusedcode",
+    "phpstan": "phpstan analyse src/ -c phpstan.neon --level=7 --no-progress -vvv --memory-limit=-1",
     "phpunit": "phpunit",
+    "infection": "infection --min-msi=50 --min-covered-msi=70 --log-verbosity=all",
     "coverage": "phpunit --coverage-text --coverage-html ./build/coverage/html --coverage-clover ./build/coverage/clover.xml",
-    "phpbench": "phpbench run benchmarks --report=default"
+    "phpbench": "phpbench run benchmarks --report=default",
+    "bccheck": "roave-backward-compatibility-check"
   }
 }
