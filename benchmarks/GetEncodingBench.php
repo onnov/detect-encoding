@@ -31,9 +31,10 @@ class GetEncodingBench
      * @Revs(1000)
      * @Iterations(5)
      * @ParamProviders({"textProvider"})
+     * @param array $textArray
      */
-    public function benchGetEncoding($text)
+    public function benchGetEncoding(array $textArray)
     {
-        $this->encodingDetector->getEncoding($text);
+        $this->encodingDetector->getEncoding($textArray[0]);
     }
 }
