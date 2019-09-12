@@ -7,6 +7,7 @@
 
 namespace Onnov\DetectEncoding;
 
+use Exception;
 use RuntimeException;
 
 /**
@@ -146,10 +147,15 @@ class EncodingDetector
         $res = $text;
         $xec = $this->getEncoding($text);
         if ($xec !== $encoding) {
-            $res = iconv($xec, $encoding . $extra, $text);
-
-            if ($res === false) {
-                throw new RuntimeException('iconv returned false');
+            $msg = 'iconv returned false';
+            try {
+                $res = iconv($xec, $encoding . $extra, $text);
+                if ($res === false) {
+                    throw new RuntimeException($msg);
+                }
+            } catch (Exception $error) {
+                $msg = $error->getMessage();
+                throw new RuntimeException($msg);
             }
         }
 

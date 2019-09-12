@@ -101,7 +101,6 @@ class EncodingDetectorTest extends TestCase
     public function testIconvXtoEncodingException($textUtf8)
     {
         $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('iconv returned false');
 
         $encodingDetector = new EncodingDetector();
         $txt = $textUtf8 . '€';
