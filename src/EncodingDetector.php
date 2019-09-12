@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 /**
  * User: onnov
  * Date: 27.08.2019
@@ -7,6 +6,8 @@ declare(strict_types=1);
  */
 
 namespace Onnov\DetectEncoding;
+
+use RuntimeException;
 
 /**
  * Class EncodingDetector
@@ -129,24 +130,31 @@ class EncodingDetector
      * optional parameters:
      * $extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
      * $encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
+     * $throw = true (default setting) f the iconv fails, the method will throw an exception
+     * $throw = false If the iconv fails, the method will return an empty string
      *
      * @param string $text
-     * @param string|null $extra
-     * @param string|null $encoding
+     * @param string $extra
+     * @param string $encoding
+     * @param bool   $throw
      *
-     * @return false|string
+     * @return string
      */
     public function iconvXtoEncoding(
         string &$text,
-        ?string $extra = null,
-        ?string $encoding = null
-    ) {
-        $extra = $extra ?? '//TRANSLIT';
-        $encoding = $encoding ?? EncodingDetector::UTF_8;
+        string $extra = '//TRANSLIT',
+        string $encoding = EncodingDetector::UTF_8,
+        bool   $throw = true
+    ): string {
         $res = $text;
         $xec = $this->getEncoding($text);
         if ($xec !== $encoding) {
-            $res = iconv($xec, $encoding, $text);
+            $res = iconv($xec, $encoding . $extra, $text);
+
+            if ($res === false && $throw) {
+                throw new RuntimeException('iconv returned false');
+            }
+            $res = $res ? $res : '';
         }
 
         return $res;

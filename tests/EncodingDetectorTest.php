@@ -27,6 +27,7 @@ class EncodingDetectorTest extends TestCase
                 EncodingDetector::MAC_CYRILLIC,
             ]
         );
+
         $this->assertEquals(EncodingDetector::UTF_8, $encodingDetector->getEncoding($text));
         $textWindows1251 = iconv(EncodingDetector::UTF_8, EncodingDetector::WINDOWS_1251, $text);
         $this->assertEquals(EncodingDetector::WINDOWS_1251, $encodingDetector->getEncoding($textWindows1251));
@@ -81,14 +82,31 @@ class EncodingDetectorTest extends TestCase
 
     /**
      * @dataProvider textDataProvider
-     * @param string $text
+     * @param string $textUtf8
      */
-    public function testIconvXtoEncoding($text)
+    public function testIconvXtoEncoding($textUtf8)
     {
         $encodingDetector = new EncodingDetector();
-        $this->assertSame($text, $encodingDetector->iconvXtoEncoding($text));
-        $textKOI8R = iconv(EncodingDetector::UTF_8, EncodingDetector::KOI8_R, $text);
-        $this->assertSame($textKOI8R, $encodingDetector->iconvXtoEncoding($text, '//IGNORE', EncodingDetector::KOI8_R));
+        $this->assertSame($textUtf8, $encodingDetector->iconvXtoEncoding($textUtf8));
+        $textKOI8R = iconv(EncodingDetector::UTF_8, EncodingDetector::KOI8_R, $textUtf8);
+        $this->assertSame($textKOI8R, $encodingDetector->iconvXtoEncoding($textUtf8, '//IGNORE', EncodingDetector::KOI8_R));
+        $this->assertSame($textKOI8R, $encodingDetector->iconvXtoEncoding($textKOI8R, '//IGNORE', EncodingDetector::KOI8_R));
+    }
+
+
+    /**
+     * @dataProvider textDataProvider
+     * @param string $textUtf8
+     */
+    public function testIconvXtoEncodingException($textUtf8)
+    {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('iconv returned false');
+
+        $encodingDetector = new EncodingDetector();
+        $txt = $textUtf8 . '€';
+
+        $encodingDetector->iconvXtoEncoding($txt, '', EncodingDetector::IBM866);
     }
 
     public function testGetEncodingList()

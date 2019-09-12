@@ -45,8 +45,10 @@ composer require onnov/detect-encoding
 
 Alternatively, add the dependency directly to your composer.json file:
 ```json
-"require": {
-    "onnov/detect-encoding": "^1.0"
+{
+    "require": {
+        "onnov/detect-encoding": "^1.0"
+    }
 }
 ```
 
@@ -68,9 +70,21 @@ $detector->getEncoding($text)
 * Method for converting text of an unknown encoding into a given encoding, by default in utf-8
   optional parameters:
 ```php
-$extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
-  
-$encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
+/**
+ * Method for converting text of an unknown encoding into a given encoding, by default in utf-8
+ * optional parameters:
+ * $extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
+ * $encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
+ * $throw = true (default setting) f the iconv fails, the method will throw an exception
+ * $throw = false If the iconv fails, the method will return an empty string
+ *
+ * @param string $text
+ * @param string $extra
+ * @param string $encoding
+ * @param bool   $throw
+ *
+ * @return string
+ */
 
 $detector->iconvXtoEncoding($text)
 ```
