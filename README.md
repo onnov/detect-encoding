@@ -75,15 +75,13 @@ $detector->getEncoding($text)
  * optional parameters:
  * $extra = '//TRANSLIT' (default setting) , other options: '' or '//IGNORE'
  * $encoding = 'utf-8' (default setting) , other options: any encoding that is available iconv
- * $throw = true (default setting) f the iconv fails, the method will throw an exception
- * $throw = false If the iconv fails, the method will return an empty string
  *
  * @param string $text
  * @param string $extra
  * @param string $encoding
- * @param bool   $throw
  *
  * @return string
+ * @throws RuntimeException
  */
 
 $detector->iconvXtoEncoding($text)
