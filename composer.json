@@ -54,7 +54,7 @@
     "phpunit": "phpunit",
     "infection": "infection --min-msi=50 --min-covered-msi=70 --log-verbosity=all",
     "coveragehtml": "phpunit --coverage-text --coverage-html ./build/coverage/html --coverage-clover ./build/coverage/clover.xml",
-    "coverage": "phpunit --coverage-text --coverage-clover coverage.clover",
+    "coverage": "phpunit --coverage-text --coverage-clover clover.xml",
     "phpbench": "phpbench run benchmarks --report=default",
     "bccheck": "roave-backward-compatibility-check"
   }
