@@ -53,7 +53,8 @@
     "phpstan": "phpstan analyse src/ -c phpstan.neon --level=7 --no-progress -vvv --memory-limit=-1",
     "phpunit": "phpunit",
     "infection": "infection --min-msi=50 --min-covered-msi=70 --log-verbosity=all",
-    "coverage": "phpunit --coverage-text --coverage-html ./build/coverage/html --coverage-clover ./build/coverage/clover.xml",
+    "coveragehtml": "phpunit --coverage-text --coverage-html ./build/coverage/html --coverage-clover ./build/coverage/clover.xml",
+    "coverage": "phpunit --coverage-text --coverage-clover coverage.clover",
     "phpbench": "phpbench run benchmarks --report=default",
     "bccheck": "roave-backward-compatibility-check"
   }

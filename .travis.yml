@@ -31,10 +31,12 @@ script:
   - composer phpcs
   - composer phpmd
   - composer phpstan
-  - composer phpunit
   - if [[ $NO_INFECTION != 1 ]]; then composer infection; fi
   - composer coverage
 
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 notifications:
   email: false

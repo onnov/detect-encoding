@@ -1,4 +1,8 @@
 [![Build Status](https://travis-ci.org/onnov/detect-encoding.svg?branch=master)](https://travis-ci.org/onnov/detect-encoding)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/onnov/detect-encoding/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/onnov/detect-encoding/?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/aa3091e93729db37e696/maintainability)](https://codeclimate.com/github/onnov/detect-encoding/maintainability)
+[![Latest Stable Version](https://poser.pugx.org/onnov/detect-encoding/v/stable)](https://packagist.org/packages/onnov/detect-encoding)
+[![License](https://poser.pugx.org/onnov/detect-encoding/license)](https://packagist.org/packages/onnov/detect-encoding)
 
 # Detect encoding
 
