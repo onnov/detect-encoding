@@ -174,10 +174,10 @@ class EncodingDetector
         $result = $this::UTF_8;
         if ($this->isUtf($text) == false) {
             $res = [];
-            $text = count_chars($text, 1);
+            $chars = count_chars($text, 1);
             foreach ($this->ranges as $encoding => $config) {
-                $upc = array_intersect_key($text, $config['upper']);
-                $loc = array_intersect_key($text, $config['lower']);
+                $upc = array_intersect_key($chars, $config['upper']);
+                $loc = array_intersect_key($chars, $config['lower']);
                 $res[$encoding] = (array_sum($upc) + array_sum($loc)
                     * EncodingDetector::LOWER_FACTOR);
             }
