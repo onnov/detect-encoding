@@ -27,7 +27,7 @@ class EncodingDetector
     public const KOI8_R = 'koi8-r';
     public const IBM866 = 'ibm866';
     public const ISO_8859_5 = 'iso-8859-5';
-    public const MAC_CYRILLIC = 'mac-cyrillic';
+    public const MAC_CYRILLIC = 'MacCyrillic';
 
     /** @var array<string, array<string, string>> */
     protected $rangeModel
@@ -48,7 +48,7 @@ class EncodingDetector
                 'upper' => '128-148,150-159,240',
                 'lower' => '160-175,224-239,241',
             ],
-            'mac-cyrillic' => [
+            'MacCyrillic' => [
                 'upper' => '128-148,150-159,221',
                 'lower' => '222-254',
             ],

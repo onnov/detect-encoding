@@ -20,11 +20,11 @@ windows-1251 | 99.13 | 98.83 | 98.54 | 99.04 | 99.73 | 99.93 | 100.0
 koi8-r       | 99.89 | 99.98 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0
 iso-8859-5   | 81.79 | 99.27 | 99.98 | 100.0 | 100.0 | 100.0 | 100.0
 ibm866       | 99.81 | 99.99 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0
-mac-cyrillic | 12.79 | 47.49 | 73.48 | 92.15 | 99.30 | 99.94 | 100.0 
+MacCyrillic  | 12.79 | 47.49 | 73.48 | 92.15 | 99.30 | 99.94 | 100.0 
 
-Worst accuracy with mac-cyrillic, you need at least 60 characters to determine this encoding with an accuracy of 92.15%. Windows-1251 encoding also has very poor accuracy. This is because the numbers of their characters in the tables overlap very much.
+Worst accuracy with MacCyrillic, you need at least 60 characters to determine this encoding with an accuracy of 92.15%. Windows-1251 encoding also has very poor accuracy. This is because the numbers of their characters in the tables overlap very much.
 
-Fortunately, mac-cyrillic and ibm866 encodings are not used to encode web pages. By default, they are disabled in the script, but you can enable them if necessary.
+Fortunately, MacCyrillic and ibm866 encodings are not used to encode web pages. By default, they are disabled in the script, but you can enable them if necessary.
 
 letters ->       | 5     | 10    | 15    | 30    | 60    |
 ---              |   --- |  ---  | ---   |---    |---    |
@@ -67,13 +67,21 @@ $detector = new EncodingDetector();
 
 * Definition of text encoding:
 ```php
+use Onnov\DetectEncoding\EncodingDetector;
+        
+$detector = new EncodingDetector();
+
 $text = 'Проверяемый текст';
-$detector->getEncoding($text)
+$detector->getEncoding($text);
 ```
 
 * Method for converting text of an unknown encoding into a given encoding, by default in utf-8
   optional parameters:
 ```php
+use Onnov\DetectEncoding\EncodingDetector;
+        
+$detector = new EncodingDetector();
+
 /**
  * Method for converting text of an unknown encoding into a given encoding, by default in utf-8
  * optional parameters:
@@ -88,26 +96,38 @@ $detector->getEncoding($text)
  * @throws RuntimeException
  */
 
-$detector->iconvXtoEncoding($text)
+$detector->iconvXtoEncoding($text);
 ```
 
 * Method to enable encoding definition:
 ```php
+use Onnov\DetectEncoding\EncodingDetector;
+        
+$detector = new EncodingDetector();
+
 $detector->enableEncoding([
-    $detector::IBM866,
-    $detector::MAC_CYRILLIC,
+    EncodingDetector::IBM866,
+    EncodingDetector::MAC_CYRILLIC,
 ]);
 ```
 
 * Method to disable encoding definition:
 ```php
+use Onnov\DetectEncoding\EncodingDetector;
+        
+$detector = new EncodingDetector();
+
 $detector->disableEncoding([
-    $detector::ISO_8859_5,
+    EncodingDetector::ISO_8859_5,
 ]);
 ```
 
 * Method for adding custom encoding:
 ```php
+use Onnov\DetectEncoding\EncodingDetector;
+        
+$detector = new EncodingDetector();
+
 $detector->addEncoding([
     'encodingName' => [
         'upper' => '1-50,200-250,253', // uppercase character number range
@@ -125,7 +145,7 @@ $cyrillicUppercase = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФЧЦЧШЩЪЫ
 $cyrillicLowercase = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
     
 $codePage = new CodePage();
-$encodingRange = $codePage->getRange($cyrillicUppercase, $cyrillicLowercase, 'koi8-u'));
+$encodingRange = $codePage->getRange($cyrillicUppercase, $cyrillicLowercase, 'koi8-u');
 ```
 
 ## Symfony use
