@@ -10,13 +10,13 @@ php:
   - '7.3'
   - '7.4'
 
-matrix:
-  fast_finish: true
-  include:
-    - php: 7.4snapshot
-      env: NO_INFECTION=1
-    - php: nightly
-      env: NO_INFECTION=1
+#matrix:
+#  fast_finish: true
+#  include:
+#    - php: 7.4snapshot
+#      env: NO_INFECTION=1
+#    - php: nightly
+#      env: NO_INFECTION=1
 
 before_install:
   - if [[ $NO_XDEBUG == 1 ]]; then phpenv config-rm xdebug.ini || echo 'No xdebug config.'; fi
@@ -31,7 +31,8 @@ script:
   - composer phpcs
   - composer phpmd
   - composer phpstan
-  - if [[ $NO_INFECTION != 1 ]]; then composer infection; fi
+#  - if [[ $NO_INFECTION != 1 ]]; then composer infection; fi
+  - composer infection
   - composer coverage
 
 notifications:
