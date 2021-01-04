@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
 /**
  * User: onnov
  * Date: 27.08.2019
  * Time: 21:59
  */
+
+declare(strict_types=1);
 
 namespace Onnov\DetectEncoding;
 
@@ -17,14 +20,14 @@ use RuntimeException;
  */
 class EncodingDetector
 {
-    const LOWER_FACTOR = 3;
+    public const LOWER_FACTOR = 3;
 
-    const UTF_8 = 'utf-8';
-    const WINDOWS_1251 = 'windows-1251';
-    const KOI8_R = 'koi8-r';
-    const IBM866 = 'ibm866';
-    const ISO_8859_5 = 'iso-8859-5';
-    const MAC_CYRILLIC = 'mac-cyrillic';
+    public const UTF_8 = 'utf-8';
+    public const WINDOWS_1251 = 'windows-1251';
+    public const KOI8_R = 'koi8-r';
+    public const IBM866 = 'ibm866';
+    public const ISO_8859_5 = 'iso-8859-5';
+    public const MAC_CYRILLIC = 'mac-cyrillic';
 
     /** @var array<string, array<string, string>> */
     protected $rangeModel
@@ -51,7 +54,7 @@ class EncodingDetector
             ],
         ];
 
-    /** @var array */
+    /** @var mixed[] */
     protected $ranges;
 
     /**
@@ -77,7 +80,7 @@ class EncodingDetector
      *      $detector::MAC_CYRILLIC,
      * ]);
      *
-     * @param array $encodingList
+     * @param mixed[] $encodingList
      */
     public function enableEncoding(array $encodingList): void
     {
@@ -96,7 +99,7 @@ class EncodingDetector
      *      $detector::ISO_8859_5,
      * ]);
      *
-     * @param array $encodingList
+     * @param string[] $encodingList
      */
     public function disableEncoding(array $encodingList): void
     {
@@ -115,7 +118,7 @@ class EncodingDetector
      *      ],
      * ]);
      *
-     * @param array $ranges
+     * @param mixed[] $ranges
      */
     public function addEncoding(array $ranges): void
     {
@@ -172,14 +175,13 @@ class EncodingDetector
     public function getEncoding(string &$text): string
     {
         $result = $this::UTF_8;
-        if ($this->isUtf($text) == false) {
+        if ($this->isUtf($text) === false) {
             $res = [];
             $chars = count_chars($text, 1);
             foreach ($this->ranges as $encoding => $config) {
                 $upc = array_intersect_key($chars, $config['upper']);
                 $loc = array_intersect_key($chars, $config['lower']);
-                $res[$encoding] = (array_sum($upc) + array_sum($loc)
-                    * EncodingDetector::LOWER_FACTOR);
+                $res[$encoding] = (array_sum($upc) + array_sum($loc) * self::LOWER_FACTOR);
             }
             asort($res);
             $result = (string)array_key_last($res);
@@ -201,9 +203,9 @@ class EncodingDetector
     }
 
     /**
-     * @param array $config
+     * @param mixed[] $config
      *
-     * @return array
+     * @return mixed[]
      */
     private function getRanges(array $config): array
     {
@@ -218,20 +220,19 @@ class EncodingDetector
      *
      * @param string $str
      *
-     * @return array|null
+     * @return int[]
      */
-    private function getRange(string &$str): ?array
+    private function getRange(string &$str): array
     {
-        $res = [];
+        $ranges = [];
         foreach (explode(',', $str) as $item) {
             $arr = explode('-', $item);
             if (count($arr) > 1) {
-                $arr = range($arr[0], $arr[1]);
+                $ranges[] = implode(',', range($arr[0], $arr[1]));
             }
-            $res = array_merge($res, $arr);
         }
 
-        return array_flip($res);
+        return array_flip(explode(',', implode(',', $ranges)));
     }
 
     /**

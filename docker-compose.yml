@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+
+  de_app:
+    container_name: de_app
+    build:
+      context: .
+      args:
+        UID: ${UID:-1001}
+        GID: ${GID:-1001}
+    command: tail -f /dev/null
+    volumes:
+      - ".:/var/www/de"
+      - "~/.ssh/:/home/www-data/.ssh/"

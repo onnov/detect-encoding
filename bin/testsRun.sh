@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-vendor/bin/phpcs
-vendor/bin/phpmd src text cleancode,codesize,controversial,design,naming,unusedcode
+vendor/bin/phpcs --config-set encoding utf-8
+vendor/bin/phpcs -p --standard=PSR12 ./src/ ./tests/
+vendor/bin/phpmd src/ text cleancode,codesize,controversial,design,naming,unusedcode
 vendor/bin/phpstan analyse src/ -c phpstan.neon --level=7 --no-progress -vvv --memory-limit=-1
 vendor/bin/phpbench run benchmarks --report=default
 vendor/bin/infection --min-msi=50 --min-covered-msi=70 --log-verbosity=all

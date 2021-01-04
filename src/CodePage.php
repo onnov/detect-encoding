@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
 /**
  * User: onnov
  * Date: 02.09.2019
  * Time: 18:25
  */
+
+declare(strict_types=1);
 
 namespace Onnov\DetectEncoding;
 
@@ -43,7 +46,7 @@ class CodePage
     }
 
     /**
-     * @param array $array
+     * @param array<int, int|string> $array
      *
      * @return string
      */
@@ -59,7 +62,7 @@ class CodePage
                 }
                 $ranges[] = [$current, null];
             }
-            $last = $current;
+            $last = (int)$current;
         }
         $lastKey = array_key_last($ranges);
         $ranges[$lastKey][1] = $last;
@@ -72,9 +75,8 @@ class CodePage
             }
             $stringIntervals[] = array_pop($interval);
         }
-        $string = implode(', ', $stringIntervals);
 
-        return $string;
+        return implode(', ', $stringIntervals);
     }
 
     /**
