@@ -18,9 +18,9 @@ php:
 #    - php: nightly
 #      env: NO_INFECTION=1
 
-before_install:
-  - if [[ $NO_XDEBUG == 1 ]]; then phpenv config-rm xdebug.ini || echo 'No xdebug config.'; fi
-  - test "$TRAVIS_PHP_VERSION" != "nightly" || export COMPOSER_FLAGS="$COMPOSER_FLAGS --ignore-platform-reqs"
+#before_install:
+#  - if [[ $NO_XDEBUG == 1 ]]; then phpenv config-rm xdebug.ini || echo 'No xdebug config.'; fi
+#  - test "$TRAVIS_PHP_VERSION" != "nightly" || export COMPOSER_FLAGS="$COMPOSER_FLAGS --ignore-platform-reqs"
 
 before_script:
   - composer self-update
