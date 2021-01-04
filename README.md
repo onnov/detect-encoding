@@ -38,6 +38,7 @@ Determining the encoding is very fast, for example, text longer than 1,300,000 C
 
 Link to the idea: http://patttern.blogspot.com/2012/07/php-python.html
 
+---
 ## Installation
 [Composer](https://getcomposer.org) (recommended)
 Use Composer to install this library from Packagist: onnov/captcha
@@ -58,6 +59,7 @@ Alternatively, add the dependency directly to your composer.json file:
 
 The classes in the project are structured according to the PSR-4 standard, so you can also use your own autoloader or require the needed files directly in your code.
 
+---
 ## Usage
 ```php
 use Onnov\DetectEncoding\EncodingDetector;
@@ -147,6 +149,10 @@ $cyrillicLowercase = 'абвгдеёжзийклмнопрстуфхцчшщъы
 $codePage = new CodePage();
 $encodingRange = $codePage->getRange($cyrillicUppercase, $cyrillicLowercase, 'koi8-u');
 ```
+
+[Tests and examples for the project](https://github.com/onnov/detect-encoding-test)
+
+---
 
 ## Symfony use
 Add in services.yaml file:
