@@ -32,24 +32,24 @@ class EncodingDetector
     /** @var array<string, array<string, string>> */
     protected $rangeModel
         = [
-            'windows-1251' => [
-                'upper' => '168,192-212,214-223',
-                'lower' => '184,224-255',
+            self::WINDOWS_1251 => [
+                'upper' => '168, 192-212, 214-223',
+                'lower' => '184, 224-255',
             ],
-            'koi8-r'       => [
-                'upper' => '179,224-231, 233-255',
-                'lower' => '163,192-223',
+            self::KOI8_R       => [
+                'upper' => '179, 224-231, 233-255',
+                'lower' => '163, 192-223',
             ],
-            'iso-8859-5'   => [
-                'upper' => '161,176-196,198-207',
-                'lower' => '208-239,241',
+            self::ISO_8859_5   => [
+                'upper' => '161, 176-196, 198-207',
+                'lower' => '208-239, 241',
             ],
-            'ibm866'       => [
-                'upper' => '128-148,150-159,240',
-                'lower' => '160-175,224-239,241',
+            self::IBM866       => [
+                'upper' => '128-148, 150-159, 240',
+                'lower' => '160-175, 224-239, 241',
             ],
-            'MacCyrillic' => [
-                'upper' => '128-148,150-159,221',
+            self::MAC_CYRILLIC => [
+                'upper' => '128-148, 150-159, 221',
                 'lower' => '222-254',
             ],
         ];
@@ -65,9 +65,9 @@ class EncodingDetector
         // default setting
         $this->enableEncoding(
             [
-                $this::WINDOWS_1251,
-                $this::KOI8_R,
-                $this::ISO_8859_5,
+                self::WINDOWS_1251,
+                self::KOI8_R,
+                self::ISO_8859_5,
             ]
         );
     }
@@ -241,5 +241,13 @@ class EncodingDetector
     public function getEncodingList(): array
     {
         return $this->ranges;
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function getRangeModel(): array
+    {
+        return $this->rangeModel;
     }
 }
