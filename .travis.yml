@@ -32,8 +32,9 @@ script:
   - composer phpmd
   - composer phpstan
 #  - if [[ $NO_INFECTION != 1 ]]; then composer infection; fi
-  - composer infection
   - composer coverage
+  - composer infection
+
 
 notifications:
   email: false
