@@ -24,6 +24,7 @@ php:
 
 before_script:
   - phpenv config-rm xdebug.ini
+  - pecl install pcov
   - composer self-update
   - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-dist $COMPOSER_FLAGS
 
